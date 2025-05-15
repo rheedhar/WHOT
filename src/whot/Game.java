@@ -4,184 +4,193 @@ import java.util.*;
 
 public class Game {
 
-    public static HashMap<String, Integer> scores = new HashMap<>();
-    public static int gameRound;
+    public static void main(String[] args) {
+        Scanner keyboard = new Scanner(System.in);
 
+        // Welcome players to the game
+        welcomePlayers();
 
-    public static void clearConsole() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        //get number of players
+        int numPlayers = getNumberOfPlayers(keyboard);
+
+        // create players and store in list
+        List<Player> players = createPlayerObjects(keyboard, numPlayers);
+
+        // create deck and deal cards to each player
+        MainDeck mainDeck = new MainDeck();
+        PlayDeck playdeck = mainDeck.dealCards(5);
+
+        // start game play
+        startGame(players, mainDeck, playdeck, keyboard);
+
     }
 
+    private static void welcomePlayers() {
+        System.out.println("---------Welcome to Whot Game--------");
+    }
 
-    public static void main(String[] args) {
-        int numPlayers = 0;
-        List<Player> players = new ArrayList<>();
-
+    private static int getNumberOfPlayers(Scanner keyboard) {
+        System.out.println("How many players are playing?");
         while (true) {
-            Scanner keyboard = new Scanner(System.in);
-            System.out.println("---------Welcome to Whot Game--------");
-            System.out.println("How many players are playing?");
+            System.out.println("At least 2 users must play. \nPlease enter a number greater than or equal to 2: ");
+            try {
+                int numPlayers = Integer.parseInt(keyboard.nextLine());
 
-            while (!(numPlayers >= 2)) {
-                System.out.println("At least 2 users must play. \nPlease enter a number greater than or equal to 2: ");
-                numPlayers = keyboard.nextInt();
-                keyboard.nextLine();
-            }
-
-            System.out.println("Please enter the name for each player");
-            int playerNum = 1;
-            while (playerNum <= numPlayers) {
-                System.out.println("Enter name for Player " + playerNum + ":");
-                String playerName = keyboard.nextLine();
-
-                if (playerName.isBlank()) {
-                    System.out.println("Name for player cannot be empty");
-                    continue;
+                if (numPlayers >= 2) {
+                    return numPlayers;
                 }
-
-                players.add(new Player(playerName));
-                playerNum++;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid integer");
             }
-
-            // create deck and deal cards to each player
-            MainDeck mainDeck = new MainDeck();
-            PlayDeck playdeck = mainDeck.dealCards(5);
-
-
-            while(true) {
-                int i = 0;
-                while (i < players.size()) {
-                    Player currentPlayer = players.get(i);
-                    System.out.print("Call card: ");
-                    System.out.println(playdeck.getDeck().peekLast());
-                    System.out.println();
-                    System.out.println(currentPlayer.getPlayerName() + "'s turn to play");
-                    int playerChoice;
-
-                    boolean playerMenu = true;
-                    while (playerMenu) {
-                        System.out.println("- Enter 1 to view your cards");
-                        System.out.println("- Enter 2 to go to market");
-                        System.out.println("- Enter 3 to play card");
-
-                        playerChoice = keyboard.nextInt();
-                        keyboard.nextLine();
-                        if (!Set.of(1, 2, 3).contains(playerChoice)) {
-                            System.out.println("Please enter a valid choice");
-                            continue;
-                        }
-
-                        int cardPosition;
-                        Card playedCard;
-                        if (playerChoice == 1) {
-                            System.out.println(currentPlayer.getPlayerCards());
-                        } else if (playerChoice == 2) {
-                            currentPlayer.goMarket(mainDeck);
-                            playerMenu = false;
-                        } else {
-                            boolean validPosition = false;
-                            while (!validPosition) {
-                                System.out.println("Enter position of card you will like to play");
-                                cardPosition = keyboard.nextInt();
-                                keyboard.nextLine();
-                                if (!(cardPosition - 1 >= 0 && cardPosition - 1 < currentPlayer.getPlayerCards().size())) {
-                                    System.out.println("Please enter a valid card position");
-                                    System.out.println();
-                                } else {
-                                    playedCard = currentPlayer.playCard(cardPosition);
-                                    Card matchedCard = playdeck.addCard(currentPlayer, playedCard);
-                                    if (matchedCard == null) {
-                                        System.out.println("Card does not match play card. Select another matching card or go to market");
-                                        break;
-                                    }
-                                    if (!matchedCard.getRank().isSpecial()) {
-                                        currentPlayer.getPlayerCards().remove(cardPosition - 1);
-                                        playerMenu = false;
-                                        //clearConsole(); //TODO clear console function not working
-                                    } else {
-                                        currentPlayer.getPlayerCards().remove(cardPosition - 1);
-                                        int specialRank = matchedCard.getRank().getNum();
-                                        switch(specialRank) {
-                                            case 1:
-                                                System.out.println(currentPlayer.getPlayerName() + " gets to play another card");
-                                                continue;
-                                            case 2:
-                                                //cardTwoPlayed();
-                                                int currentPlayerIndex = players.indexOf(currentPlayer);
-                                                int nextPlayerIndex = currentPlayerIndex + 1;
-                                                Player nextPlayer = players.get(nextPlayerIndex);
-
-                                                System.out.println(nextPlayer.getPlayerName() + "pick 2 cards from market or defend");
-                                                boolean pick2Menu = true;
-                                                while (pick2Menu) {
-                                                    System.out.println("- Enter 1 to go to market");
-                                                    System.out.println("- Enter 2 to defend");
-
-                                                    playerChoice = keyboard.nextInt();
-                                                    keyboard.nextLine();
-                                                    if (!Set.of(1, 2).contains(playerChoice)) {
-                                                        System.out.println("Please enter a valid choice");
-                                                        continue;
-                                                    }
-                                                    pick2Menu = false;
-                                                }
-
-                                                if (playerChoice == 1) {
-                                                    nextPlayer.goMarketForTwo(mainDeck);
-                                                } else if (playerChoice == 2) {
-                                                    System.out.println("- Enter 1 to view cards");
-                                                    System.out.println("- Enter 2 to play");
-
-                                                    playerChoice = keyboard.nextInt();
-                                                    keyboard.nextLine();
-
-                                                    while (!Set.of(1, 2).contains(playerChoice)) {
-                                                        System.out.println("Please enter a valid choice");
-                                                    }
-
-                                                    if (playerChoice == 1){
-                                                        System.out.println(currentPlayer.getPlayerCards());
-                                                    } else {
-                                                        continue;
-                                                    }
-                                                }
-                                                break;
-                                            case 5:
-                                                // cardFivePlayed();
-                                                break;
-                                            case 8:
-                                                //cardEightPlayed();
-                                                break;
-                                            case 14:
-                                                //cardFourteenPlayed();
-                                                break;
-                                            case 20:
-                                                //cardTwentyPlayed();
-                                                break;
-                                            default:
-                                                break;
-                                        }
-                                        playerMenu = false;
-                                    }
-
-
-
-
-                                    validPosition = true;
-                                }
-
-                            }
-
-                        }
-                    }
-
-                    i++;
-
-                }
-            }
-
         }
 
     }
+
+    private static List<Player> createPlayerObjects(Scanner keyboard, int numPlayers) {
+        List<Player> playersTemp = new ArrayList<>(numPlayers);
+        System.out.println("Please enter the name for each player");
+        int playerNum = 1;
+        while(playerNum <= numPlayers) {
+            System.out.println("Enter name for Player " + playerNum + ":");
+            String playerName = keyboard.nextLine();
+
+            if (playerName.isBlank()) {
+                System.out.println("Player needs to have a name");
+                continue;
+            }
+
+            playersTemp.add(new Player(playerName));
+            playerNum++;
+        }
+
+        return playersTemp;
+    }
+
+
+    private static void startGame(List<Player> players, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+        while (true) {
+            for(Player currentPlayer: players) {
+                play(currentPlayer, players, mainDeck, playDeck, keyboard);
+            }
+        }
+    }
+
+    private static void play(Player currentPlayer, List<Player> players, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+        System.out.println(currentPlayer.getPlayerName() + "'s turn to play");
+        System.out.print("Call card: " + playDeck.getDeck().peekLast());
+        System.out.println();
+
+        while (true) {
+            int currentPlayerChoice = getPlayerMenuChoice(keyboard);
+
+            if (currentPlayerChoice == 1) {
+                System.out.println(currentPlayer.getPlayerCards());
+            } else if (currentPlayerChoice == 2) {
+                currentPlayer.goMarket(mainDeck);
+                return;
+            } else {
+                boolean isValidPlay = handleCardPlay(players, currentPlayer, mainDeck, playDeck, keyboard);
+                if(isValidPlay) return;
+            }
+        }
+
+    }
+
+    private static int getPlayerMenuChoice(Scanner keyboard) {
+        while (true) {
+            System.out.println("- Enter 1 to view your cards");
+            System.out.println("- Enter 2 to go to market");
+            System.out.println("- Enter 3 to play card");
+            try {
+                int playerChoice = Integer.parseInt(keyboard.nextLine());
+
+                if (Set.of(1, 2, 3).contains(playerChoice)) {
+                    return playerChoice;
+                } else {
+                    System.out.println("Please enter a valid menu choice");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid integer");
+            }
+
+        }
+    }
+
+    private static boolean handleCardPlay(List<Player> players, Player currentPlayer, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+        int cardPosition = getCardPosition(currentPlayer, keyboard);
+        Card playedCard = currentPlayer.playCard(cardPosition);
+        Card matchedCard = playDeck.addCard(currentPlayer, playedCard);
+
+        if (matchedCard == null) {
+            System.out.println("Card does not match play card. Select another matching card or go to market");
+            return false;
+        }
+
+        currentPlayer.getPlayerCards().remove(cardPosition - 1);
+
+        if (!matchedCard.getRank().isSpecial()) return true;
+
+        return handleSpecialCard(matchedCard, currentPlayer, players, mainDeck, playDeck, keyboard);
+    }
+
+    private static int getCardPosition(Player currentPlayer, Scanner keyboard) {
+        while (true) {
+            System.out.println("Enter position of card you will like to play");
+            try {
+                int cardPosition = Integer.parseInt(keyboard.nextLine());
+
+                if (cardPosition - 1 >= 0 && cardPosition - 1 < currentPlayer.getPlayerCards().size()) {
+                    return cardPosition;
+                } else {
+                    System.out.println("Please enter a valid card position");
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Please enter a valid integer");
+            }
+        }
+
+    }
+
+    private static boolean handleSpecialCard(Card matchedCard, Player currentPlayer, List<Player> players, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+        int specialRank = matchedCard.getRank().getNum();
+        switch(specialRank) {
+            case 1:
+                System.out.println(currentPlayer.getPlayerName() + " gets to play another card");
+                return false;
+            case 2:
+                //return handlePickTwo(players, currentPlayer, mainDeck, playDeck, keyboard);
+            case 5:
+                //return handlePickThree();
+                break;
+            case 8:
+                //return handleSkipNextPlayer();
+                break;
+            case 14:
+                //return handleAllPlayersGoToMarket();
+                break;
+            case 20:
+                //return handleRequestSymbol();
+                break;
+            default:
+                break;
+        }
+        throw new IllegalStateException("Unexpected Special card: " + matchedCard.getRank() + "of" + matchedCard.getSuit() );
+    }
+
+//    private static boolean handlePickTwo(List<Player> players, Player currentPlayer, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+//        int currentPlayerIndex = players.indexOf(currentPlayer);
+//        int nextPlayerIndex = currentPlayerIndex + 1;
+//        Player nextPlayer = players.get(nextPlayerIndex);
+//
+//        System.out.println(nextPlayer.getPlayerName() + "pick 2 cards from market or defend");
+//        int playerChoice = SpecialCard.getPickTwoMenu(keyboard);
+//
+//        if (playerChoice == 1) {
+//            nextPlayer.goMarketForTwo(mainDeck);
+//        } else if (playerChoice == 2) {
+//            SpecialCard.defendPickTwo();
+//        }
+//
+//    }
+
 }
