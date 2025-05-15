@@ -1,12 +1,16 @@
 package whot;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MainDeck extends Deck {
-    private static int numCards = 54;
+    private int numCards;
+    private PlayDeck playDeck;
+
+    public MainDeck() {
+        initializeDeck();
+        numCards = getDeck().size();
+    }
+
 
     protected final void initializeDeck() {
         HashMap<Suit, List<Rank>> suitToRanks = new HashMap<>();
@@ -28,18 +32,55 @@ public class MainDeck extends Deck {
 
             for (Rank rank: ranks) {
                 Card card = new Card(suit, rank);
-                deck.add(card);
+                getDeck().addLast(card);
             }
         }
 
     }
 
-   public MainDeck() {
-        initializeDeck();
-   }
+    public PlayDeck dealCards(int numberOfCardsPerPlayer) {
+        shuffleCards();
+        if (!getDeck().isEmpty() && !Player.getCurrentPlayers().isEmpty()) {
+            for (String key: Player.getCurrentPlayers().keySet()) {
+                int i = numberOfCardsPerPlayer;
+                List<Card> playerCards = Player.getCurrentPlayers().get(key);
+                while(i != 0) {
+                    playerCards.add(getDeck().removeLast());
+                    i--;
+                }
+            }
+            playDeck = new PlayDeck(getDeck().removeLast());
+            numCards = getDeck().size();
+        }
+
+        return playDeck; // TODO: returning a private reference might be bad
+    }
+
+
+    public Card getTopCard() {
+        Card topCard = getDeck().removeLast();
+
+        numCards = getDeck().size();
+        if (numCards == 0) {
+            fillDeckFromPlayDeck();
+        }
+        return topCard;
+    }
+
+    private void fillDeckFromPlayDeck() {
+        ArrayDeque<Card> tempDeck = playDeck.fillMainDeck();
+        for (Card card: tempDeck) {
+            getDeck().addLast(card);
+        }
+        shuffleCards();
+
+        numCards = getDeck().size();
+    }
+
+
 
    @Override
    public String toString() {
-        return deck.toString();
+        return getDeck().toString();
    }
 }

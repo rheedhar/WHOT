@@ -1,27 +1,33 @@
 package whot;
 
 public enum Rank {
-    ONE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SEVEN(7),
-    EIGHT(8),
-    TEN(10),
-    ELEVEN(11),
-    TWELVE(12),
-    THIRTEEN(13),
-    FOURTEEN(14),
-    TWENTY(20);
+    ONE(1, true),
+    TWO(2, true),
+    THREE(3, false),
+    FOUR(4, false),
+    FIVE(5, true),
+    SEVEN(7, false),
+    EIGHT(8, true),
+    TEN(10, false),
+    ELEVEN(11, false),
+    TWELVE(12, false),
+    THIRTEEN(13, false),
+    FOURTEEN(14, true),
+    TWENTY(20, true);
 
     private final int num;
+    private final boolean special;
 
-    Rank(int num) {
+    Rank(int num, boolean isSpecial) {
         this.num = num;
+        this.special = isSpecial;
     }
 
     public int getNum () {
         return num;
+    }
+
+    public boolean isSpecial() {
+        return special;
     }
 }

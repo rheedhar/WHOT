@@ -1,4 +1,4 @@
 package whot;
 
-public class MarketDeck {
+public class MarketDeck extends Deck {
 }
