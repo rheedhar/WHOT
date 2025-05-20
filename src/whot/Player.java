@@ -32,12 +32,33 @@ public class Player {
     }
 
     public void goMarket(MainDeck market) {
-        playerCards.add(market.getTopCard());
+        Card marketCard = market.getTopCard();
+        playerCards.add(marketCard);
+        System.out.println("Market Card: " + marketCard);
     }
 
     public void goMarketForTwo(MainDeck market) {
-        playerCards.add(market.getTopCard());
-        playerCards.add(market.getTopCard());
+        Card marketCard1 = market.getTopCard();
+        Card marketCard2 = market.getTopCard();
+
+        playerCards.add(marketCard1);
+        playerCards.add(marketCard2);
+
+        List<Card> marketCards = List.of(marketCard1, marketCard2);
+        System.out.println("Market Cards: " + marketCards);
+    }
+
+    public void goMarketForThree(MainDeck market) {
+        Card marketCard1 = market.getTopCard();
+        Card marketCard2 = market.getTopCard();
+        Card marketCard3 = market.getTopCard();
+
+        playerCards.add(marketCard1);
+        playerCards.add(marketCard2);
+        playerCards.add(marketCard3);
+
+        List<Card> marketCards = List.of(marketCard1, marketCard2, marketCard3);
+        System.out.println("Market Cards: " + marketCards);
     }
 
     public String announceLastCard() {

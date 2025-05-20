@@ -19,7 +19,7 @@ public abstract class Deck {
     public void sort(String by) {
         if(by.compareToIgnoreCase("suit") == 0) {
             ArrayList<Card> tempDeck = new ArrayList<>(deck);
-            tempDeck.sort((a, b) -> a.getSuit().getValue().compareTo(b.getSuit().getValue()));
+            tempDeck.sort((a, b) -> a.getSuit().name().compareTo(b.getSuit().name()));
             deck.clear();
             deck.addAll(tempDeck);
         } else {
