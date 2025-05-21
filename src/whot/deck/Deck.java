@@ -1,4 +1,6 @@
-package whot;
+package whot.deck;
+
+import whot.card.Card;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

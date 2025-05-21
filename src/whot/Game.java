@@ -1,11 +1,30 @@
 package whot;
 
+import whot.card.Card;
+import whot.card.CardValidator;
+import whot.card.SpecialCard;
+import whot.card.Suit;
+import whot.deck.MainDeck;
+import whot.deck.PlayDeck;
+import whot.player.Player;
+import whot.util.InputMenu;
+import whot.util.PlayRules;
+
 import java.util.*;
 
 public class Game {
-    private SpecialCard specialCard = SpecialCard.NONE;
+    private boolean isGameActive;
+    private int gameRound;
     private String whotRequest;
+    private SpecialCard specialCard = SpecialCard.NONE;
     private boolean isFirstPlayCardWhot = false;
+    private MainDeck mainDeck;
+    private PlayDeck playDeck;
+
+
+    public void setGameRound(int gameRound) {
+        this.gameRound = gameRound;
+    }
 
     public void welcomePlayers() {
         System.out.println("---------Welcome to Whot Game--------");
@@ -49,7 +68,11 @@ public class Game {
     }
 
     private void setSpecialEffect(PlayDeck playDeck) {
-        switch (playDeck.getDeck().peekLast().getRank().getNum()) {
+        switch (Objects.requireNonNull(playDeck.getDeck().peekLast()).getRank().getNum()) {
+            case 1:
+            case 8:
+                specialCard = SpecialCard.HOLD_ON;
+                break;
             case 2:
                 specialCard = SpecialCard.PICK_TWO;
                 break;
@@ -67,12 +90,25 @@ public class Game {
         }
     }
 
-
-    public void startGame(List<Player> players, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
+    private void gameInit() {
+        isGameActive = true;
+        // create deck and deal cards to each player
+        mainDeck = new MainDeck();
+        playDeck = mainDeck.dealCards(5);
         setSpecialEffect(playDeck);
-        while (true) {
+    }
+
+    public void startGame(List<Player> players, Scanner keyboard) {
+        gameInit();
+        System.out.println("--------ROUND " + gameRound + "----------");
+        while (isGameActive) {
             for(Player currentPlayer: players) {
+                if (!isGameActive) break;
+
                 switch (specialCard) {
+                    case HOLD_ON:
+                        specialCard = SpecialCard.NONE;
+                        continue;
                     case PICK_TWO:
                         playPickTwo(currentPlayer, mainDeck, playDeck, keyboard);
                         break;
@@ -92,6 +128,15 @@ public class Game {
                 }
             }
         }
+
+        System.out.println("Current Scores: ");
+        System.out.println(Player.getPlayerScores());
+        boolean isGameReset = gameReset(keyboard);
+        if (isGameReset) {
+            ++gameRound;
+            startGame(players, keyboard);
+        }
+
     }
 
     private void play(Player currentPlayer, MainDeck mainDeck, PlayDeck playDeck, Scanner keyboard) {
@@ -100,7 +145,7 @@ public class Game {
         while (true) {
             System.out.print("Call card: " + playDeck.getDeck().peekLast());
             System.out.println();
-            int currentPlayerChoice = getPlayerMenuChoice(keyboard);
+            int currentPlayerChoice = InputMenu.getPlayerMenuChoice(keyboard);
 
             if (currentPlayerChoice == 1) {
                 System.out.println(currentPlayer.getPlayerCards());
@@ -109,7 +154,7 @@ public class Game {
                 specialCard = SpecialCard.NONE;
                 return;
             } else {
-                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, validateNormalCard);
+                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, PlayRules.validateNormalCard());
                 if (isValidPlay) return;
             }
         }
@@ -124,7 +169,7 @@ public class Game {
             System.out.println();
             System.out.println(currentPlayer.getPlayerName() + ", you have to pick 2 cards from market or defend");
 
-            int playerChoice = getPlayerMenuChoice(keyboard);
+            int playerChoice = InputMenu.getPlayerMenuChoice(keyboard);
             if (playerChoice == 1) {
                 System.out.println(currentPlayer.getPlayerCards());
             } else if (playerChoice == 2) {
@@ -132,7 +177,7 @@ public class Game {
                 specialCard = SpecialCard.NONE;
                 return;
             } else {
-                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, validateSpecialCard);
+                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, PlayRules.validateSpecialCard());
                 if (isValidPlay) return;
             }
         }
@@ -147,7 +192,7 @@ public class Game {
             System.out.print("Call card: " + playDeck.getDeck().peekLast());
             System.out.println();
 
-            int playerChoice = getPlayerMenuChoice(keyboard);
+            int playerChoice = InputMenu.getPlayerMenuChoice(keyboard);
             if (playerChoice == 1) {
                 System.out.println(currentPlayer.getPlayerCards());
             } else if (playerChoice == 2) {
@@ -155,7 +200,7 @@ public class Game {
                 specialCard = SpecialCard.NONE;
                 return;
             } else {
-                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, validateSpecialCard);
+                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, PlayRules.validateSpecialCard());
                 if (isValidPlay) return;
             }
         }
@@ -164,7 +209,7 @@ public class Game {
     private void playGeneralMarket (Player currentPlayer, MainDeck mainDeck, Scanner keyboard) {
         System.out.println(currentPlayer.getPlayerName() + " you have to go to general market");
 
-        int playerChoice = generalMarketMenu(keyboard);
+        int playerChoice = InputMenu.generalMarketMenu(keyboard);
         if (playerChoice == 1) {
             currentPlayer.goMarket(mainDeck);
             specialCard = SpecialCard.NONE;
@@ -179,7 +224,7 @@ public class Game {
         while (true) {
             System.out.println("Call card: " + playDeck.getDeck().peekLast());
 
-            int playerChoice = getPlayerMenuChoice(keyboard);
+            int playerChoice = InputMenu.getPlayerMenuChoice(keyboard);
             if (playerChoice == 1) {
                 System.out.println(currentPlayer.getPlayerCards());
             } else if (playerChoice == 2) {
@@ -187,7 +232,7 @@ public class Game {
                 specialCard = SpecialCard.WHOT;
                 return;
             } else {
-                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, validateWhotCard);
+                boolean isValidPlay = handleCardPlay(currentPlayer, playDeck, keyboard, PlayRules.validateWhotCard(whotRequest));
                 if (isValidPlay) return;
             }
 
@@ -196,7 +241,7 @@ public class Game {
     }
 
     private boolean handleCardPlay(Player currentPlayer, PlayDeck playDeck, Scanner keyboard, CardValidator validator) {
-        int cardPosition = getCardPosition(currentPlayer, keyboard);
+        int cardPosition = InputMenu.getCardPosition(currentPlayer, keyboard);
         Card playedCard = currentPlayer.playCard(cardPosition);
         Card callCard = playDeck.getDeck().peekLast();
 
@@ -205,13 +250,19 @@ public class Game {
             return false;
         }
 
-        if (playedCard.getRank().getNum() == 20 && (List.of(2, 3).contains(callCard.getRank().getNum())) && !validator.validateCard(callCard, playedCard)) {
+        if (playedCard.getRank().getNum() == 20 && (List.of(2, 5).contains(callCard.getRank().getNum())) && !validator.validateCard(callCard, playedCard)) {
             System.out.println("Card does not match play card. Select another matching card or go to market");
             return false;
         }
 
         playDeck.addCard(playedCard);
         currentPlayer.getPlayerCards().remove(cardPosition - 1);
+        if (currentPlayer.getPlayerCards().isEmpty()) {
+            System.out.println("Winner: " + currentPlayer.getPlayerName());
+            isGameActive = false;
+            updateGameScore(currentPlayer);
+            return true;
+        }
 
         if (!playedCard.getRank().isSpecial()) {
             specialCard = SpecialCard.NONE;
@@ -247,61 +298,13 @@ public class Game {
         throw new IllegalStateException("Unexpected Special card: " + matchedCard.getRank() + "of" + matchedCard.getSuit() );
     }
 
-    private int getPlayerMenuChoice(Scanner keyboard) {
-        while (true) {
-            System.out.println("- Enter 1 to view your cards");
-            System.out.println("- Enter 2 to go to market");
-            System.out.println("- Enter 3 to play card");
-            try {
-                int playerChoice = Integer.parseInt(keyboard.nextLine());
-
-                if (Set.of(1, 2, 3).contains(playerChoice)) {
-                    return playerChoice;
-                } else {
-                    System.out.println("Please enter a valid menu choice");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid integer");
-            }
-
-        }
-    }
-
-    private int generalMarketMenu(Scanner keyboard) {
-        while (true) {
-            System.out.println("- Enter 1 to go to market");
-            try {
-                int playerChoice = Integer.parseInt(keyboard.nextLine());
-                if (playerChoice == 1) {
-                    return playerChoice;
-                } else {
-                    System.out.println("Please enter a valid choice");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid integer");
-            }
-
-        }
-    }
-
-
-    private int getCardPosition(Player currentPlayer, Scanner keyboard) {
-        while (true) {
-            System.out.println("Enter position of card you will like to play");
-            try {
-                int cardPosition = Integer.parseInt(keyboard.nextLine());
-
-                if (cardPosition - 1 >= 0 && cardPosition - 1 < currentPlayer.getPlayerCards().size()) {
-                    return cardPosition;
-                } else {
-                    System.out.println("Please enter a valid card position");
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Please enter a valid integer");
-            }
-        }
+    private boolean gameReset(Scanner keyboard) {
+        int playerChoice = InputMenu.continuePlaying(keyboard);
+        return playerChoice != 2;
 
     }
+
+
 
     private void setWhotRequest(Scanner keyboard) {
         while (true) {
@@ -321,16 +324,9 @@ public class Game {
         }
         return false;
     }
-    
 
-    CardValidator validateNormalCard = (callCard, playedCard) -> {
-        boolean rankMatch = callCard.getRank().getNum() == playedCard.getRank().getNum();
-        boolean suitMatch = callCard.getSuit().name().equals(playedCard.getSuit().name());
-        return rankMatch || suitMatch;
-    };
-
-    CardValidator validateSpecialCard = (Card callCard, Card playedCard) -> callCard.getRank().getNum() == playedCard.getRank().getNum();
-
-    CardValidator validateWhotCard = (Card callCard, Card playedCard) -> playedCard.getSuit().name().equalsIgnoreCase(whotRequest);
+    private void updateGameScore(Player currentPlayer) {
+        Player.updatePlayerScores(currentPlayer);
+    }
 
 }

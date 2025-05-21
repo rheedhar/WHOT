@@ -1,4 +1,4 @@
-package whot;
+package whot.card;
 
 public enum Rank {
     ONE(1, true),

@@ -1,4 +1,9 @@
-package whot;
+package whot.deck;
+
+import whot.player.Player;
+import whot.card.Card;
+import whot.card.Rank;
+import whot.card.Suit;
 
 import java.util.*;
 
@@ -44,6 +49,7 @@ public class MainDeck extends Deck {
             for (String key: Player.getCurrentPlayers().keySet()) {
                 int i = numberOfCardsPerPlayer;
                 List<Card> playerCards = Player.getCurrentPlayers().get(key);
+                playerCards.clear();
                 while(i != 0) {
                     playerCards.add(getDeck().removeLast());
                     i--;

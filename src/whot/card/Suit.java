@@ -1,4 +1,4 @@
-package whot;
+package whot.card;
 
 public enum Suit {
     CIRCLE,

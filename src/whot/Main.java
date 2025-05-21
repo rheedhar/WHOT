@@ -1,5 +1,7 @@
 package whot;
 
+import whot.player.Player;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,12 +19,10 @@ public class Main {
         // create players and store in list
         List<Player> players = whotGame.createPlayerObjects(keyboard, numPlayers);
 
-        // create deck and deal cards to each player
-        MainDeck mainDeck = new MainDeck();
-        PlayDeck playdeck = mainDeck.dealCards(5);
 
         // start game play
-        whotGame.startGame(players, mainDeck, playdeck, keyboard);
+        whotGame.setGameRound(1);
+        whotGame.startGame(players, keyboard);
 
     }
 }

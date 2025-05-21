@@ -1,4 +1,4 @@
-package whot;
+package whot.card;
 
 public class Card implements Comparable<Card> {
     private final Suit suit;

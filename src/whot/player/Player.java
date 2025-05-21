@@ -1,21 +1,34 @@
-package whot;
+package whot.player;
+
+import whot.card.Card;
+import whot.deck.MainDeck;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class Player {
-    private static HashMap<String, List<Card>> currentPlayers = new HashMap<>();
-    private String playerName;
-    private List<Card> playerCards = new ArrayList<>();
+    private static final HashMap<String, List<Card>> currentPlayers = new HashMap<>();
+    private static final HashMap<String, Integer> playerScores = new HashMap<>();
+    private final String playerName;
+    private final List<Card> playerCards = new ArrayList<>();
 
     public Player(String playerName) {
         this.playerName = playerName;
         currentPlayers.put(this.playerName, playerCards);
+        playerScores.put(this.playerName, 0);
     }
 
     public static HashMap<String, List<Card>> getCurrentPlayers() {
         return currentPlayers;
+    }
+
+    public static HashMap<String, Integer> getPlayerScores() {
+        return playerScores;
+    }
+
+    public static void updatePlayerScores(Player player) {
+        playerScores.put(player.playerName, playerScores.get(player.playerName) + 1);
     }
 
     public List<Card> getPlayerCards() {

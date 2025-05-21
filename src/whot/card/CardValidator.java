@@ -1,4 +1,4 @@
-package whot;
+package whot.card;
 
 @FunctionalInterface
 public interface CardValidator {
