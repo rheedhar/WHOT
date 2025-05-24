@@ -8,31 +8,44 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Player {
-    private static final HashMap<String, List<Card>> currentPlayers = new HashMap<>();
     private static final HashMap<String, Integer> playerScores = new HashMap<>();
     private final String playerName;
     private final List<Card> playerCards = new ArrayList<>();
 
     public Player(String playerName) {
         this.playerName = playerName;
-        currentPlayers.put(this.playerName, playerCards);
         playerScores.put(this.playerName, 0);
     }
 
-    public static HashMap<String, List<Card>> getCurrentPlayers() {
-        return currentPlayers;
-    }
-
-    public static HashMap<String, Integer> getPlayerScores() {
+    public static HashMap<String, Integer> getPlayersScores() {
         return playerScores;
     }
 
-    public static void updatePlayerScores(Player player) {
+    public static void updatePlayersScores(Player player) {
         playerScores.put(player.playerName, playerScores.get(player.playerName) + 1);
     }
 
     public List<Card> getPlayerCards() {
         return playerCards;
+    }
+
+    public String getFormattedPlayerCards() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        for(int i = 0; i < playerCards.size(); i++) {
+            stringBuilder
+                    .append("(")
+                    .append(i + 1)
+                    .append(") ")
+                    .append(playerCards.get(i));
+
+
+            if (i != playerCards.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 
     public String getPlayerName() {
@@ -44,35 +57,18 @@ public class Player {
         return playerCards.get(index);
     }
 
-    public void goMarket(MainDeck market) {
-        Card marketCard = market.getTopCard();
-        playerCards.add(marketCard);
-        System.out.println("Market Card: " + marketCard);
+    public void goMarket(MainDeck market, int numCards) {
+        int totalCardsToPick = numCards;
+        String cardText = numCards == 1 ? "card" : "cards";
+        while (totalCardsToPick > 0) {
+            Card marketCard = market.getTopCard();
+            playerCards.add(marketCard);
+            --totalCardsToPick;
+        }
+        System.out.println(playerName + " has picked " + numCards + " " + cardText + " from market");
+
     }
 
-    public void goMarketForTwo(MainDeck market) {
-        Card marketCard1 = market.getTopCard();
-        Card marketCard2 = market.getTopCard();
-
-        playerCards.add(marketCard1);
-        playerCards.add(marketCard2);
-
-        List<Card> marketCards = List.of(marketCard1, marketCard2);
-        System.out.println("Market Cards: " + marketCards);
-    }
-
-    public void goMarketForThree(MainDeck market) {
-        Card marketCard1 = market.getTopCard();
-        Card marketCard2 = market.getTopCard();
-        Card marketCard3 = market.getTopCard();
-
-        playerCards.add(marketCard1);
-        playerCards.add(marketCard2);
-        playerCards.add(marketCard3);
-
-        List<Card> marketCards = List.of(marketCard1, marketCard2, marketCard3);
-        System.out.println("Market Cards: " + marketCards);
-    }
 
     public String announceLastCard() {
         return "Last Card Remaining";

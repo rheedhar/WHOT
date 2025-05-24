@@ -14,10 +14,10 @@ public class Main {
         whotGame.welcomePlayers();
 
         //get number of players
-        int numPlayers = whotGame.getNumberOfPlayers(keyboard);
+        int gameOption = whotGame.setGameOption(keyboard);
 
         // create players and store in list
-        List<Player> players = whotGame.createPlayerObjects(keyboard, numPlayers);
+        List<Player> players = whotGame.createPlayerObjects(keyboard, gameOption);
 
 
         // start game play

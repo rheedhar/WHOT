@@ -43,13 +43,12 @@ public class MainDeck extends Deck {
 
     }
 
-    public PlayDeck dealCards(int numberOfCardsPerPlayer) {
+    public PlayDeck dealCards(List<Player> players, int numberOfCardsPerPlayer) {
         shuffleCards();
-        if (!getDeck().isEmpty() && !Player.getCurrentPlayers().isEmpty()) {
-            for (String key: Player.getCurrentPlayers().keySet()) {
+        if (!getDeck().isEmpty()) {
+            for (Player player: players) {
                 int i = numberOfCardsPerPlayer;
-                List<Card> playerCards = Player.getCurrentPlayers().get(key);
-                playerCards.clear();
+                List<Card> playerCards = player.getPlayerCards();
                 while(i != 0) {
                     playerCards.add(getDeck().removeLast());
                     i--;

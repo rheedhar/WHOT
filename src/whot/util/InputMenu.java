@@ -36,13 +36,12 @@ public final class InputMenu {
 
     public static int getPlayerMenuChoice(Scanner keyboard) {
         while (true) {
-            System.out.println("- Enter 1 to view your cards");
-            System.out.println("- Enter 2 to go to market");
-            System.out.println("- Enter 3 to play card");
+            System.out.println("- Enter 1 to go to market");
+            System.out.println("- Enter 2 to play card");
             try {
                 int playerChoice = Integer.parseInt(keyboard.nextLine());
 
-                if (List.of(1, 2, 3).contains(playerChoice)) {
+                if (List.of(1, 2).contains(playerChoice)) {
                     return playerChoice;
                 } else {
                     System.out.println("Please enter a valid menu choice");
