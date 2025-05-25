@@ -1,5 +1,6 @@
 package whot.player;
 
+import whot.io.IOHandler;
 import whot.card.Card;
 import whot.card.CardValidator;
 import whot.card.SpecialCard;
@@ -17,9 +18,11 @@ public class ComputerPlayer extends Player {
     private String whotRequest;
     private boolean computerPlayerWins = false;
     private boolean goToMarket = false;
+    private final IOHandler io;
 
-    public ComputerPlayer(String name) {
+    public ComputerPlayer(String name, IOHandler io) {
         super(name);
+        this.io = io;
     }
 
     public SpecialCard getSpecialCard() {
@@ -36,20 +39,16 @@ public class ComputerPlayer extends Player {
 
     public void play(MainDeck mainDeck, PlayDeck playDeck) {
         numberOfMarketCards = 1;
-        System.out.println();
-        System.out.println(getPlayerName() + "'s turn to play");
+        io.println();
+        io.println(getPlayerName() + "'s turn to play");
         while (true) {
-            System.out.println();
-            System.out.println("Call card: " + playDeck.getDeck().peekLast());
-            System.out.println();
+            io.println();
+            io.println("Call card: " + playDeck.getDeck().peekLast());
+            io.println();
 
             boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateNormalCard());
             if (goToMarket) {
-                try {
-                    Thread.sleep(3500);
-                } catch (InterruptedException e) {
-                    System.err.println("Thread was interrupted " + e.getMessage());
-                }
+                io.delay(3500);
                 goMarket(mainDeck, numberOfMarketCards);
                 specialCard = SpecialCard.NONE;
                 goToMarket = false;
@@ -62,21 +61,17 @@ public class ComputerPlayer extends Player {
 
     public void playPickTwoOrThree(MainDeck mainDeck, PlayDeck playDeck, int numCards) {
         numberOfMarketCards = numCards;
-        System.out.println();
-        System.out.println(getPlayerName() + "'s turn to play");
-        System.out.println(getPlayerName() + ", you have to pick " +  numCards + " cards from market or defend");
+        io.println();
+        io.println(getPlayerName() + "'s turn to play");
+        io.println(getPlayerName() + ", you have to pick " +  numCards + " cards from market or defend");
 
         while (true) {
-            System.out.println();
-            System.out.println("Call card: " + playDeck.getDeck().peekLast());
+            io.println();
+            io.println("Call card: " + playDeck.getDeck().peekLast());
 
             boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateSpecialCard());
             if (goToMarket) {
-                try {
-                    Thread.sleep(3500);
-                } catch (InterruptedException e) {
-                    System.err.println("Thread was interrupted " + e.getMessage());
-                }
+                io.delay(3500);
                 goMarket(mainDeck, numberOfMarketCards);
                 specialCard = SpecialCard.NONE;
                 goToMarket = false;
@@ -90,12 +85,8 @@ public class ComputerPlayer extends Player {
     }
 
     public void playGeneralMarket (MainDeck mainDeck) {
-        System.out.println(getPlayerName() + " is going to general market");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            System.err.println("Thread was interrupted" + e.getMessage());
-        }
+        io.println(getPlayerName() + " is going to general market");
+        io.delay(2000);
         goMarket(mainDeck, 1);
         specialCard = SpecialCard.NONE;
     }
@@ -103,21 +94,17 @@ public class ComputerPlayer extends Player {
     public void playWhot(MainDeck mainDeck, PlayDeck playDeck, String whotRequest) {
         this.whotRequest = whotRequest;
         numberOfMarketCards = 1;
-        System.out.println();
-        System.out.println(getPlayerName() + "'s turn to play");
-        System.out.println(getPlayerName() + " can either play a card with a suit of " + whotRequest + ", defend with a suit of whot or go to market");
+        io.println();
+        io.println(getPlayerName() + "'s turn to play");
+        io.println(getPlayerName() + " can either play a card with a suit of " + whotRequest + ", defend with a suit of whot or go to market");
 
         while (true) {
-            System.out.println();
-            System.out.println("Call card: " + playDeck.getDeck().peekLast());
+            io.println();
+            io.println("Call card: " + playDeck.getDeck().peekLast());
 
             boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateWhotCard(whotRequest));
             if(goToMarket) {
-                try {
-                    Thread.sleep(3500);
-                } catch (InterruptedException e) {
-                    System.err.println("Thread was interrupted " + e.getMessage());
-                }
+                io.delay(3500);
                 goMarket(mainDeck, numberOfMarketCards);
                 specialCard = SpecialCard.WHOT;
                 goToMarket = false;
@@ -141,18 +128,13 @@ public class ComputerPlayer extends Player {
             }
 
             playDeck.addCard(card);
-            try {
-                Thread.sleep(3500);
-            } catch (InterruptedException e) {
-                System.err.println("Thread was interrupted " + e.getMessage());
-            }
-            System.out.println(getPlayerName() + " played " + card);
+            io.delay(3500);
+            io.println(getPlayerName() + " played " + card);
             iterator.remove();
             if (getPlayerCards().isEmpty()) {
-                System.out.println();
-                System.out.println("Winner: " + getPlayerName());
+                io.println();
+                io.println("Winner: " + getPlayerName());
                 computerPlayerWins = true;
-                Player.updatePlayersScores(this);
                 return true;
             }
 
@@ -174,8 +156,8 @@ public class ComputerPlayer extends Player {
         switch(specialRank) {
             case 1:
             case 8:
-                System.out.println();
-                System.out.println(getPlayerName() + " gets to play another card");
+                io.println();
+                io.println(getPlayerName() + " gets to play another card");
                 return false;
             case 2:
                 specialCard = SpecialCard.PICK_TWO;
@@ -199,6 +181,6 @@ public class ComputerPlayer extends Player {
     public void setWhotRequest() {
         int firstCardIndex = 0;
         whotRequest = getPlayerCards().get(firstCardIndex).getSuit().name();
-        System.out.println(getPlayerName() + " requested a " + whotRequest);
+        io.println(getPlayerName() + " requested a " + whotRequest);
     }
 }

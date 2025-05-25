@@ -1,31 +1,30 @@
 package whot.util;
 
+import whot.io.IOHandler;
 import whot.player.Player;
 
 import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
 
 public final class InputMenu {
 
     private InputMenu() {}
 
-    public static int continuePlaying(Scanner keyboard) {
+    public static int continuePlaying(IOHandler io) {
         while (true) {
-            System.out.println("Do you want to play another round?");
-            System.out.println("Enter 1 to play another round");
-            System.out.println("Enter 2 to exit game");
+            io.println("Do you want to play another round?");
+            io.println("Enter 1 to play another round");
+            io.println("Enter 2 to exit game");
 
             try {
-                int playerChoice = Integer.parseInt(keyboard.nextLine());
+                int playerChoice = Integer.parseInt(io.readLine());
 
                 if (List.of(1, 2).contains(playerChoice)) {
                     return playerChoice;
                 } else {
-                    System.out.println("Please enter a valid menu choice");
+                    io.println("Please enter a valid menu choice");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid integer");
+                io.println("Please enter a valid integer");
             }
         }
     }
@@ -34,52 +33,52 @@ public final class InputMenu {
 
 
 
-    public static int getPlayerMenuChoice(Scanner keyboard) {
+    public static int getPlayerMenuChoice(IOHandler io) {
         while (true) {
-            System.out.println("- Enter 1 to go to market");
-            System.out.println("- Enter 2 to play card");
+            io.println("- Enter 1 to go to market");
+            io.println("- Enter 2 to play card");
             try {
-                int playerChoice = Integer.parseInt(keyboard.nextLine());
+                int playerChoice = Integer.parseInt(io.readLine());
 
                 if (List.of(1, 2).contains(playerChoice)) {
                     return playerChoice;
                 } else {
-                    System.out.println("Please enter a valid menu choice");
+                    io.println("Please enter a valid menu choice");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid integer");
+                io.println("Please enter a valid integer");
             }
 
         }
     }
 
-    public static int generalMarketMenu(Scanner keyboard) {
+    public static int generalMarketMenu(IOHandler io) {
         while (true) {
-            System.out.println("- Enter 1 to go to market");
+            io.println("- Enter 1 to go to market");
             try {
-                int playerChoice = Integer.parseInt(keyboard.nextLine());
+                int playerChoice = Integer.parseInt(io.readLine());
                 if (playerChoice == 1) {
                     return playerChoice;
                 } else {
-                    System.out.println("Please enter a valid choice");
+                    io.println("Please enter a valid choice");
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid integer");
+                io.println("Please enter a valid integer");
             }
 
         }
     }
 
-    public static int getCardPosition(Player currentPlayer, Scanner keyboard) {
+    public static int getCardPosition(Player currentPlayer, IOHandler io) {
         while (true) {
-            System.out.println("Enter position of card you will like to play");
+            io.println("Enter position of card you will like to play");
             try {
-                int cardPosition = Integer.parseInt(keyboard.nextLine());
+                int cardPosition = Integer.parseInt(io.readLine());
 
                 if (cardPosition - 1 >= 0 && cardPosition - 1 < currentPlayer.getPlayerCards().size()) {
                     return cardPosition;
                 } else {
-                    System.out.println("Please enter a valid card position");
+                    io.println("Please enter a valid card position");
                 }
             } catch (NumberFormatException e) {
                 System.err.println("Please enter a valid integer");

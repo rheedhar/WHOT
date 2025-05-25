@@ -8,21 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Player {
-    private static final HashMap<String, Integer> playerScores = new HashMap<>();
     private final String playerName;
     private final List<Card> playerCards = new ArrayList<>();
 
     public Player(String playerName) {
         this.playerName = playerName;
-        playerScores.put(this.playerName, 0);
-    }
-
-    public static HashMap<String, Integer> getPlayersScores() {
-        return playerScores;
-    }
-
-    public static void updatePlayersScores(Player player) {
-        playerScores.put(player.playerName, playerScores.get(player.playerName) + 1);
     }
 
     public List<Card> getPlayerCards() {

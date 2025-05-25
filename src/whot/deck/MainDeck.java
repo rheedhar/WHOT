@@ -47,6 +47,7 @@ public class MainDeck extends Deck {
         shuffleCards();
         if (!getDeck().isEmpty()) {
             for (Player player: players) {
+                player.getPlayerCards().clear();
                 int i = numberOfCardsPerPlayer;
                 List<Card> playerCards = player.getPlayerCards();
                 while(i != 0) {
