@@ -81,7 +81,7 @@ public final class InputMenu {
                     io.println("Please enter a valid card position");
                 }
             } catch (NumberFormatException e) {
-                System.err.println("Please enter a valid integer");
+                io.println("Please enter a valid integer");
             }
         }
 

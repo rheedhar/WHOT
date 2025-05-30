@@ -23,11 +23,12 @@ public class Game {
     private boolean isFirstPlayCardWhot = false;
     private MainDeck mainDeck;
     private PlayDeck playDeck;
-    private final ScoreBoard scoreBoard = new ScoreBoard();
+    private final ScoreBoard scoreBoard;
     public final IOHandler io;
 
     public Game(IOHandler io) {
         this.io = io;
+        scoreBoard = new ScoreBoard(this.io);
     }
 
     public void start() {
@@ -117,7 +118,8 @@ public class Game {
         isGameActive = true;
         // create deck and deal cards to each player
         mainDeck = new MainDeck();
-        playDeck = mainDeck.dealCards(players, 5);
+        mainDeck.dealCards(players, 5);
+        playDeck = mainDeck.getPlayDeck();
         setSpecialEffect();
 
         io.println("--------ROUND " + gameRound + "----------");
@@ -133,13 +135,7 @@ public class Game {
             }
         }
 
-        io.println("Current Scores: ");
-        scoreBoard.printScoreBoard();
-        boolean isGameReset = gameReset();
-        if (isGameReset) {
-            ++gameRound;
-            startGame(players);
-        }
+        resetGame(players);
     }
 
 
@@ -191,7 +187,7 @@ public class Game {
             int currentPlayerChoice = InputMenu.getPlayerMenuChoice(io);
 
             if (currentPlayerChoice == 1) {
-                currentPlayer.goMarket(mainDeck, 1);
+                currentPlayer.goMarket(mainDeck, 1, io);
                 specialCard = SpecialCard.NONE;
                 return;
             } else {
@@ -216,7 +212,7 @@ public class Game {
 
             int playerChoice = InputMenu.getPlayerMenuChoice(io);
             if (playerChoice == 1) {
-                currentPlayer.goMarket(mainDeck, numCards);
+                currentPlayer.goMarket(mainDeck, numCards, io);
                 specialCard = SpecialCard.NONE;
                 return;
             }  else {
@@ -240,7 +236,7 @@ public class Game {
         io.println();
         int playerChoice = InputMenu.generalMarketMenu(io);
         if (playerChoice == 1) {
-            currentPlayer.goMarket(mainDeck, 1);
+            currentPlayer.goMarket(mainDeck, 1, io);
             specialCard = SpecialCard.NONE;
         }
 
@@ -260,7 +256,7 @@ public class Game {
 
             int playerChoice = InputMenu.getPlayerMenuChoice(io);
             if (playerChoice == 1) {
-                currentPlayer.goMarket(mainDeck, 1);
+                currentPlayer.goMarket(mainDeck, 1, io);
                 specialCard = SpecialCard.WHOT;
                 return;
             } else {
@@ -365,6 +361,16 @@ public class Game {
             scoreBoard.incrementPlayerScore(computerPlayer.getPlayerName());
         }
 
+    }
+
+    private void resetGame(List<Player> players) {
+        io.println("Current Scores: ");
+        scoreBoard.printScoreBoard();
+        boolean isGameReset = gameReset();
+        if (isGameReset) {
+            ++gameRound;
+            startGame(players);
+        }
     }
 
     private boolean gameReset() {

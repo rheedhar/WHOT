@@ -2,6 +2,7 @@ package whot.player;
 
 import whot.card.Card;
 import whot.deck.MainDeck;
+import whot.io.IOHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +30,6 @@ public class Player {
                     .append(") ")
                     .append(playerCards.get(i));
 
-
             if (i != playerCards.size() - 1) {
                 stringBuilder.append(", ");
             }
@@ -47,7 +47,7 @@ public class Player {
         return playerCards.get(index);
     }
 
-    public void goMarket(MainDeck market, int numCards) {
+    public void goMarket(MainDeck market, int numCards, IOHandler io) {
         int totalCardsToPick = numCards;
         String cardText = numCards == 1 ? "card" : "cards";
         while (totalCardsToPick > 0) {
@@ -55,7 +55,7 @@ public class Player {
             playerCards.add(marketCard);
             --totalCardsToPick;
         }
-        System.out.println(playerName + " has picked " + numCards + " " + cardText + " from market");
+        io.println(playerName + " has picked " + numCards + " " + cardText + " from market");
 
     }
 

@@ -37,6 +37,10 @@ public class ComputerPlayer extends Player {
         return computerPlayerWins;
     }
 
+    public int getNumberOfMarketCards() {
+        return numberOfMarketCards;
+    }
+
     public void play(MainDeck mainDeck, PlayDeck playDeck) {
         numberOfMarketCards = 1;
         io.println();
@@ -46,10 +50,10 @@ public class ComputerPlayer extends Player {
             io.println("Call card: " + playDeck.getDeck().peekLast());
             io.println();
 
-            boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateNormalCard());
+            boolean isValidPlay = handleCardPlay(playDeck, PlayRules.validateNormalCard());
             if (goToMarket) {
                 io.delay(3500);
-                goMarket(mainDeck, numberOfMarketCards);
+                goMarket(mainDeck, numberOfMarketCards, io);
                 specialCard = SpecialCard.NONE;
                 goToMarket = false;
             }
@@ -69,10 +73,10 @@ public class ComputerPlayer extends Player {
             io.println();
             io.println("Call card: " + playDeck.getDeck().peekLast());
 
-            boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateSpecialCard());
+            boolean isValidPlay = handleCardPlay(playDeck, PlayRules.validateSpecialCard());
             if (goToMarket) {
                 io.delay(3500);
-                goMarket(mainDeck, numberOfMarketCards);
+                goMarket(mainDeck, numberOfMarketCards, io);
                 specialCard = SpecialCard.NONE;
                 goToMarket = false;
             }
@@ -87,7 +91,7 @@ public class ComputerPlayer extends Player {
     public void playGeneralMarket (MainDeck mainDeck) {
         io.println(getPlayerName() + " is going to general market");
         io.delay(2000);
-        goMarket(mainDeck, 1);
+        goMarket(mainDeck, 1, io);
         specialCard = SpecialCard.NONE;
     }
 
@@ -102,10 +106,10 @@ public class ComputerPlayer extends Player {
             io.println();
             io.println("Call card: " + playDeck.getDeck().peekLast());
 
-            boolean isValidPlay = handleCardPlay(mainDeck, playDeck, PlayRules.validateWhotCard(whotRequest));
+            boolean isValidPlay = handleCardPlay(playDeck, PlayRules.validateWhotCard(whotRequest));
             if(goToMarket) {
                 io.delay(3500);
-                goMarket(mainDeck, numberOfMarketCards);
+                goMarket(mainDeck, numberOfMarketCards, io);
                 specialCard = SpecialCard.WHOT;
                 goToMarket = false;
             }
@@ -116,7 +120,7 @@ public class ComputerPlayer extends Player {
     }
 
 
-    private boolean handleCardPlay(MainDeck mainDeck, PlayDeck playDeck, CardValidator validator) {
+    private boolean handleCardPlay(PlayDeck playDeck, CardValidator validator) {
         Card callCard = playDeck.getDeck().peekLast();
         for (ListIterator<Card> iterator = getPlayerCards().listIterator(); iterator.hasNext();) {
             Card card = iterator.next();
@@ -131,6 +135,8 @@ public class ComputerPlayer extends Player {
             io.delay(3500);
             io.println(getPlayerName() + " played " + card);
             iterator.remove();
+            if (getPlayerCards().size() == 1) io.println(getPlayerName() + ": " + announceLastCard());
+            if (getPlayerCards().size() == 2) io.println(getPlayerName() + ": " + announceSemiLastCard());
             if (getPlayerCards().isEmpty()) {
                 io.println();
                 io.println("Winner: " + getPlayerName());

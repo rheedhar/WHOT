@@ -43,7 +43,7 @@ public class MainDeck extends Deck {
 
     }
 
-    public PlayDeck dealCards(List<Player> players, int numberOfCardsPerPlayer) {
+    public void dealCards(List<Player> players, int numberOfCardsPerPlayer) {
         shuffleCards();
         if (!getDeck().isEmpty()) {
             for (Player player: players) {
@@ -58,8 +58,11 @@ public class MainDeck extends Deck {
             playDeck = new PlayDeck(getDeck().removeLast());
             numCards = getDeck().size();
         }
+    }
 
-        return playDeck; // TODO: returning a private reference might be bad
+
+    public PlayDeck getPlayDeck() {
+        return playDeck;
     }
 
 

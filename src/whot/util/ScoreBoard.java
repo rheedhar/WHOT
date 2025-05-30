@@ -1,10 +1,17 @@
 package whot.util;
 
+import whot.io.IOHandler;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class ScoreBoard {
     private final HashMap<String, Integer> playerScores = new HashMap<>();
+    private final IOHandler io;
+
+    public ScoreBoard(IOHandler io) {
+        this.io = io;
+    }
 
     public void registerPlayer(String name) {
         playerScores.put(name, 0);
@@ -19,10 +26,10 @@ public class ScoreBoard {
     }
 
     public void printScoreBoard() {
-        System.out.println("==========Score Board===========");
+        io.println("==========Score Board===========");
         for(Map.Entry<String, Integer> entry: playerScores.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue() + " points(s)");
+            io.println(entry.getKey() + ": " + entry.getValue() + " point(s)");
         }
-        System.out.println("================================");
+        io.println("================================");
     }
 }

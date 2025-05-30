@@ -1,4 +1,5 @@
 package whot.card;
+import org.jetbrains.annotations.NotNull;
 
 public class Card implements Comparable<Card> {
     private final Suit suit;
@@ -10,7 +11,8 @@ public class Card implements Comparable<Card> {
         this.rank = rank;
     }
 
-    public Rank getRank() {
+
+    public @NotNull Rank getRank() {
         return rank;
     }
 
