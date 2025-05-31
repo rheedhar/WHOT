@@ -11,8 +11,7 @@ import whot.card.Suit;
 import whot.deck.MainDeck;
 import whot.player.Player;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
     private MockConsoleIO mockIO;

@@ -63,6 +63,7 @@ public class InputMenuTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"1", "2"})
+    @DisplayName("Test player menu choice with valid input")
     void testGetPlayerMenuChoiceWithValidInput(String inputValue) {
         // given
         mockIO.addInput(inputValue);
@@ -79,6 +80,7 @@ public class InputMenuTest {
     }
 
     @Test
+    @DisplayName("Test get player menu choice with invalid inputs then valid inputs")
     void testGetPlayerMenuChoiceWithInvalidInputsThenValidInputs() {
         // given
         mockIO.addInput("abc");
@@ -98,6 +100,7 @@ public class InputMenuTest {
     }
 
     @Test
+    @DisplayName("Test general market menu with valid inputs")
     void testGeneralMarketMenuWithValidInputs() {
         // given
         mockIO.addInput("1");
@@ -112,6 +115,7 @@ public class InputMenuTest {
     }
 
     @Test
+    @DisplayName("Test general market menu with invalid inputs, then valid inputs")
     void testGeneralMarketMenuWithInvalidInputsThenValidInputs() {
         // given
         mockIO.addInput("abc");
@@ -130,6 +134,7 @@ public class InputMenuTest {
     }
 
     @Test
+    @DisplayName("Test get card position with valid inputs")
     void testGetCardPositionWithValidInputs() {
         // given
         Player player1 = new Player("test player 1");
@@ -150,6 +155,7 @@ public class InputMenuTest {
     }
 
     @Test
+    @DisplayName("Test get card position with invalid input then valid inputs")
     void testGetCardPositionWithInvalidInputThenValidInputs() {
         Player player1 = new Player("test player 1");
         player1.getPlayerCards().add(new Card(Suit.SQUARE, Rank.FIVE));
@@ -169,7 +175,4 @@ public class InputMenuTest {
         assertTrue(output.contains("Please enter a valid card position"));
         assertTrue(output.contains("Please enter a valid integer"));
     }
-
-
-
 }

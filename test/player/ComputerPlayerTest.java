@@ -1,7 +1,6 @@
 package player;
 
 import io.MockConsoleIO;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

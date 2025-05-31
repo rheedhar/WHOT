@@ -10,8 +10,7 @@ import whot.deck.PlayDeck;
 
 import java.util.ArrayDeque;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayDeckTest {
     PlayDeck playDeck;
