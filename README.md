@@ -1,6 +1,6 @@
-#  Whot Game 🃏🇳🇬
+#  Whot 🃏🇳🇬
 
-A command-line version of the classic **Whot** card game, developed in Java.
+A command-line version of the **Whot** card game, developed in Java.
 
 ---
 ## Game Overview
