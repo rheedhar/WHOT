@@ -19,7 +19,7 @@ This version currently supports only a single player (you vs. the computer).
 
 1. Launch the game
 2. Enter your name.
-3. Each player (you and computer) is dealt five cards
+3. Each player (you and computer) is initially dealt five cards
 4. On your turn to play:
     - View the **call card**.
     - You can choose to play a card or go to market (i.e., draw a card).
