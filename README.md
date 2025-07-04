@@ -44,9 +44,7 @@ This version currently supports only a single player (you vs. the computer).
 - JUnit 5 used for testing
 --- 
 
-## How to run the game 
-
-### Option 1 (Using an IDE (e.g. IntelliJ IDEA))
+## How to run the game
 
 If you are using an IDE such as IntelliJ, follow these steps:
 
@@ -68,27 +66,3 @@ If you are using an IDE such as IntelliJ, follow these steps:
 4. Locate the Main.java file in the project folder.
 5. Right click and run the file.
 
-### Option 2 (Using the Terminal/Command Line)
-1. Make sure you have java 11+ installed.
-    - To check your java version, run the following command in your terminal
-   ```
-   java --version
-   javac --version
-   ```
-    - if you don't have java 11 or later installed, you can download a free and open source JDK from [Azul Zulu](https://www.azul.com/downloads/?version=java-11-lts&os=windows&architecture=x86-64-bit&package=jdk-fx#zulu)
-
-2. Clone or download this repo and navigate to the project folder from the command line
-    ```
-    git clone https://github.com/rheedhar/WHOT.git
-    cd WHOT
-   ```
-3. Compile the source files using the following command
-    ```
-     javac -d out $(find src -name "*.java")
-    ```
-   This command will compile the source files in the src folder and place them in a folder called **out** within the project directory
-
-4. Run the game using this command
-   ```
-     java -cp out whot.Main
-   ```
