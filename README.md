@@ -1,5 +1,5 @@
 #  Whot 🇳🇬
----
+
 ## Game Overview
 
 Whot is a Nigerian card game played with a special deck of cards.   
