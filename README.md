@@ -55,8 +55,6 @@ If you are using an IDE such as IntelliJ, follow these steps:
     ```
     git clone https://github.com/rheedhar/WHOT.git
    ```
-   Alternatively, you can download a zip folder of this repo using the green code button / drop down at the top of this page
-
 3. Open the project folder in your IDE
 4. Locate the Main.java file in the project folder.
 5. Right click and run the file.
