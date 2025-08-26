@@ -1,7 +1,5 @@
 #  Whot 🇳🇬
 
-A command-line version of the **Whot** card game, developed in Java.
-
 ---
 ## Game Overview
 
