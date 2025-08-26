@@ -1,5 +1,4 @@
 #  Whot 🇳🇬
-
 ---
 ## Game Overview
 
